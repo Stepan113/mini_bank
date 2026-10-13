@@ -1,0 +1,65 @@
+# Здесь записаны каталог зависимостей:
+# Какие библиотеки и плагины существуют в контексте ответственности моего сервиса (kt-transfer-service),
+# какие у них версии и как к ним обращаться.
+
+[versions]
+kotlin  = "2.4.21"   # алиас для Kotlin и сериализации
+ktor    = "3.6.0"    # алиас для Ktor-зависимостей
+logback = "1.6.3"   # алиас для реализации системы логирования JVM
+
+[libraries]
+# В этом блоке происходит объявление библиотек конкретных
+
+# Передаются по шаблону:
+# АЛИАС библиотеки = {
+#     Maven-координаты = "GroupID либы:ArtifactID либы"
+#     Ссылка на версию = "Конкретный алиас версии"
+# }
+
+# Базовые серверные API: Application, маршрутизация, обработка HTTP
+ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
+# Netty - HTTP-движок, слушает порт и обрабатывает соединения
+ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
+# Подключение механизма преобразования тела HTTP-запроса/ответа
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation-jvm", version.ref = "ktor" }
+# JSON-сериализация через kotlinx.serialization
+ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json-jvm", version.ref = "ktor" }
+
+# Общая структура аутентификации Ktor
+ktor-server-auth = { module = "io.ktor:ktor-server-auth-jvm", version.ref = "ktor" }
+# Проверка JWT-токенов, которые выдаёт Keycloak
+ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt-jvm", version.ref = "ktor" }
+
+# Централизованная обработка исключений и HTTP-ошибок
+ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages-jvm", version.ref = "ktor" }
+# Валидация входящих DTO
+ktor-server-request-validation = { module = "io.ktor:ktor-server-request-validation-jvm", version.ref = "ktor" }
+# Логирование HTTP-запросов
+ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging-jvm", version.ref = "ktor" }
+
+# Тестирование Ktor-приложения без запуска реального сетевого сервера
+ktor-server-test-host = { module = "io.ktor:ktor-server-test-host-jvm", version.ref = "ktor" }
+# Реализация логирования через Simple Logging Facade For Java
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+
+[bundles]
+# Группировка библиотек под одним именем, причем имя своё даётся
+ktor-server = [
+    "ktor-server-core",
+    "ktor-server-netty",
+    "ktor-server-content-negotiation",
+    "ktor-serialization-json",
+    "ktor-server-auth",
+    "ktor-server-auth-jwt",
+    "ktor-server-status-pages",
+    "ktor-server-request-validation",
+    "ktor-server-call-logging"
+]
+
+[plugins]
+# Блок с плагинами Gradle, не обычные библиотеки
+
+# Поддержка компиляции Kotlin под JVM
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+# Генерация сериализаторов для Kotlin-классов, помеченных @Serializable
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
