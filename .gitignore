@@ -1,0 +1,38 @@
+# Локальные настройки и секреты
+.env
+.env.*
+!.env.example
+!.env.demo
+application-local.yml
+application-local.yaml
+secrets/
+backups/
+
+# Java, Kotlin, Gradle
+.gradle/
+.kotlin/
+build/
+out/
+*.class
+hs_err_pid*
+
+# React, Vite
+node_modules/
+dist/
+coverage/
+.vite/
+*.tsbuildinfo
+
+# IDE и система
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+
+# Временные файлы Word
+.~lock.*#
+~$*.docx
+*.docx
+
