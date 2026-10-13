@@ -1,0 +1,46 @@
+body {
+  background: #f5f6f8;
+  color: #212529;
+}
+.app-container {
+  max-width: 1040px;
+}
+.card {
+  border-color: #dee2e6;
+  box-shadow: none;
+}
+.card-header {
+  background: white;
+}
+.balance {
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.money {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.account-id {
+  overflow-wrap: anywhere;
+  font-size: 0.8rem;
+}
+.login-card {
+  max-width: 440px;
+  margin: 8vh auto;
+}
+.table > :not(caption) > * > * {
+  padding: 0.9rem 1rem;
+}
+.status-box {
+  border-left: 4px solid;
+}
+.text-break {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 575px) {
+  .table > :not(caption) > * > * {
+    padding: 0.7rem 0.5rem;
+    font-size: 0.875rem;
+  }
+}
