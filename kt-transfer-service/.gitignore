@@ -1,0 +1,18 @@
+# GRADLE-GENERATED PROPERTIES:
+.gradle/
+build/
+
+# IDEA-GENERATED PROPERTIES:
+.idea/
+*.iml
+
+# KOTLIN DIRECTORIES:
+.kotlin
+out/
+
+# LOCAL CONFIGURATION:
+.env
+.env.local
+
+# LOGGING
+*.log
