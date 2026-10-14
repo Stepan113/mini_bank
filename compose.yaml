@@ -1,4 +1,9 @@
 services:
+  front:
+    build: ./front
+    ports:
+      - "127.0.0.1:5173:80"
+
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
