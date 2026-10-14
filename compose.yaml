@@ -3,6 +3,8 @@ services:
     build: ./front
     ports:
       - "127.0.0.1:5173:80"
+    depends_on:
+      - keycloak
 
   postgres:
     image: postgres:16-alpine
@@ -28,10 +30,11 @@ services:
       KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_HOSTNAME: ${PUBLIC_ORIGIN}/auth
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_PROXY_HEADERS: xforwarded
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-    ports:
-      - "127.0.0.1:8081:8080"
     depends_on:
       postgres:
         condition: service_healthy

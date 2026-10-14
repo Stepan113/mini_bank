@@ -19,23 +19,25 @@ npm run demo
 ## Подключить настоящие сервисы
 
 ```bash
-cp .env.example .env
-npm run dev
+cd /home/shaman_stepan/mini_bank
+docker compose up -d --build
 ```
 
-Отредактируйте `.env` под свои адреса:
+Перед запуском создайте корневой `.env` и `front/.env` по соответствующим `.env.example`, если этих файлов ещё нет. Задайте пароли в корневом `.env` и укажите в `PUBLIC_ORIGIN` адрес, по которому браузер открывает фронт. Локально это `http://localhost:5173`. Откройте этот адрес после запуска Compose; Keycloak доступен через `/auth`, а его панель управления — через `/auth/admin`.
+
+Параметры фронта задаются в `front/.env`:
 
 | Переменная                | Назначение                                                                     |
 | ------------------------- | ------------------------------------------------------------------------------ |
-| `VITE_KEYCLOAK_URL`       | URL Keycloak, доступный браузеру; пример `http://localhost:8081`               |
+| `VITE_KEYCLOAK_URL`       | Путь Keycloak на том же origin; для Compose — `/auth`                          |
 | `VITE_KEYCLOAK_REALM`     | Realm; пример `mini-bank`                                                      |
 | `VITE_KEYCLOAK_CLIENT_ID` | Публичный клиент SPA; пример `mini-bank-front`                                 |
 | `VITE_API_BASE_URL`       | Пусто для одного origin. При отдельном gateway — его origin без `/api`         |
 | `DEV_API_TARGET`          | Адрес gateway для локального прокси Vite; по умолчанию `http://localhost:8080` |
 
-После изменения `.env` перезапустите Vite. Порт `8081` и имена realm/client — примеры, их нужно согласовать с вашей конфигурацией. Все `VITE_*` попадают в браузерную сборку: секреты и пароли в них не размещаются.
+После изменения `front/.env` пересоберите образ командой `docker compose up -d --build`. Имена realm/client нужно согласовать с настройками Keycloak. Все `VITE_*` попадают в браузерную сборку: секреты и пароли в них не размещаются. Адрес `/auth` переводится Nginx на `keycloak:8080` внутри сети Compose; в браузере Docker-имя `keycloak` не используется. Пока gateway не создан, `/api/*` отвечает `503`.
 
-Для клиента Keycloak включите Standard flow и PKCE S256, отключите Client authentication. Для локальной разработки задайте Valid redirect URIs `http://localhost:5173/*`, Valid post logout redirect URIs `http://localhost:5173/` и Web origins `http://localhost:5173`. Для VPS добавьте адрес HTTPS вашего фронта. Регистрация появится на странице входа, если включить её в realm. Пользователям нужна роль `mini-bank-user`; audience access token должен соответствовать настройкам gateway и обоих сервисов.
+Для клиента Keycloak включите Standard flow и PKCE S256, отключите Client authentication. Для локальной разработки задайте Valid redirect URIs `http://localhost:5173` и `http://localhost:5173/*`, Valid post logout redirect URIs `http://localhost:5173` и Web origins `http://localhost:5173`. Для VPS замените `PUBLIC_ORIGIN` и адреса клиента на HTTPS-адрес фронта. Регистрация появится на странице входа, если включить её в realm. Пользователям нужна роль `mini-bank-user`; audience access token должен соответствовать настройкам gateway и обоих сервисов.
 
 Фронт использует официальный `keycloak-js`: Authorization Code + PKCE, обновление токена перед запросами. Токены остаются в памяти. При истечении сессии приложение предлагает войти снова.
 
@@ -70,7 +72,7 @@ npm run preview
 
 `npm test` проверяет разбор денежных сумм и граничные значения. `npm run lint` запускает ESLint, `npm run format:check` — Prettier. Автоформатирование: `npm run format`. `npm run build` проверяет TypeScript и создаёт `dist/`. В CI используйте `npm ci` с сохранённым `package-lock.json`.
 
-Для VPS раздавайте `dist/` через Caddy/nginx и направляйте `/api/*` на gateway. Настройки `VITE_*` фиксируются при сборке: перед production-сборкой укажите адреса VPS, затем выполните `npm run build`. `npm run preview` предназначен для локальной проверки. Демо-сборка выполняется отдельно командой `npm run build:demo` и не должна подменять обычную сборку.
+Для VPS фронт раздаётся через Nginx в контейнере. Настройте HTTPS на внешнем прокси и направляйте `/api/*` на gateway, когда он появится. Текущий Compose запускает Keycloak через `start-dev` и предназначен только для локальной разработки; перед VPS его нужно перевести в production-режим. Настройки `VITE_*` фиксируются при сборке, но относительный `/auth` работает при смене домена. `npm run preview` предназначен для локальной проверки готовой сборки. Демо-сборка выполняется отдельно командой `npm run build:demo` и не должна подменять обычную сборку.
 
 ## Файлы
 

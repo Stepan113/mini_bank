@@ -6,8 +6,10 @@ const {
   VITE_KEYCLOAK_REALM: realm,
   VITE_KEYCLOAK_CLIENT_ID: clientId,
 } = import.meta.env
-export const authConfigured = isDemo || Boolean(url && realm && clientId)
-const keycloak = !isDemo && authConfigured ? new Keycloak({ url, realm, clientId }) : null
+const keycloakUrl = url ? new URL(url, window.location.origin).href.replace(/\/$/, '') : ''
+export const authConfigured = isDemo || Boolean(keycloakUrl && realm && clientId)
+const keycloak =
+  !isDemo && authConfigured ? new Keycloak({ url: keycloakUrl, realm, clientId }) : null
 let initialization: Promise<boolean> | undefined
 
 export function initAuth(): Promise<boolean> {
